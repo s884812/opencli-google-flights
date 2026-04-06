@@ -181,6 +181,12 @@ function formatDisplayPrice(priceValue) {
   return new Intl.NumberFormat('en-US').format(priceValue);
 }
 
+function parseDisplayPriceValue(value) {
+  const numeric = String(value || '').replace(/[^\d.]/g, '');
+  const parsed = Number(numeric);
+  return Number.isFinite(parsed) ? parsed : NaN;
+}
+
 function normalizeWhitespace(value) {
   return String(value || '').replace(/\s+/g, ' ').trim();
 }
@@ -365,9 +371,17 @@ function annotateFlightsForSegment(flights, segment, segmentIndex) {
   }));
 }
 
+function formatDepartureDisplayForSegments(segments) {
+  return segments
+    .map((segment) => trimValue(segment.depart))
+    .filter(Boolean)
+    .join(' | ');
+}
+
 function decorateFlights(flights, searchUrl, tripType) {
   return flights.map((flight) => ({
     ...flight,
+    departures: trimValue(flight.departures) || trimValue(flight.depart),
     search_url: searchUrl,
     trip_type: tripType,
   }));
@@ -682,7 +696,7 @@ function buildApiPayload(itinerary, searchUrl, title, flights, options = {}) {
 function parseCombinedOfferAria(ariaLabel, segment, optionIndex) {
   const aria = normalizeWhitespace(ariaLabel);
   const match = aria.match(
-    /^From\s+(\d+)\s+Japanese yen\s+(.+?)\.\s+(.+?) flight with\s+(.+?)\.\s+Leaves\s+(.+?)\s+at\s+(.+?)\s+on\s+(.+?)\s+and arrives at\s+(.+?)\s+at\s+(.+?)\s+on\s+(.+?)\.\s+Total duration\s+(.+?)\.\s*(.*?)\s*Select flight$/i
+    /^From\s+([\d,]+)\s+(.+?)\.\s+(.+?) flight with\s+(.+?)\.\s+Leaves\s+(.+?)\s+at\s+(.+?)\s+on\s+(.+?)\s+and arrives at\s+(.+?)\s+at\s+(.+?)\s+on\s+(.+?)\.\s+Total duration\s+(.+?)\.\s*(.*?)\s*Select flight$/i
   );
 
   if (!match) {
@@ -723,7 +737,7 @@ function parseCombinedOfferAria(ariaLabel, segment, optionIndex) {
     tailRaw,
   ] = match;
 
-  const priceValue = Number(priceRaw);
+  const priceValue = parseDisplayPriceValue(priceRaw);
   const pricingLabel = normalizeWhitespace(pricingLabelRaw);
   const stopLabel = normalizeWhitespace(stopLabelRaw).toLowerCase();
   const airline = normalizeWhitespace(airlineRaw);
@@ -768,7 +782,7 @@ function parseCombinedOfferAria(ariaLabel, segment, optionIndex) {
 
 function parseContinueButtonAria(ariaLabel) {
   const aria = normalizeWhitespace(ariaLabel);
-  const match = aria.match(/^Continue to book with\s+(.+?)\s+for\s+(\d+)\s+Japanese yen\.?\s*(.*)$/i);
+  const match = aria.match(/^Continue to book with\s+(.+?)\s+for\s+([\d,]+)\s+(.+?)\.?\s*(.*)$/i);
   if (!match) {
     return {
       provider: '',
@@ -779,16 +793,16 @@ function parseContinueButtonAria(ariaLabel) {
     };
   }
 
-  const [, providerRaw, priceRaw, tailRaw] = match;
+  const [, providerRaw, priceRaw, currencyLabelRaw, tailRaw] = match;
   const provider = normalizeWhitespace(providerRaw).replace(/\s+airline$/i, '');
-  const priceValue = Number(priceRaw);
+  const priceValue = parseDisplayPriceValue(priceRaw);
   return {
     provider,
     price: formatDisplayPrice(priceValue),
     price_value: priceValue,
     separate_tickets: /separately|individually|separate tickets/i.test(tailRaw),
     raw_aria: aria,
-    note: normalizeWhitespace(tailRaw),
+    note: normalizeWhitespace([currencyLabelRaw, tailRaw].filter(Boolean).join(' ')),
   };
 }
 
@@ -807,6 +821,7 @@ function buildCombinedBundleRow(bundle, rank) {
   const lastSegment = segments[segments.length - 1] || firstSegment;
   const airlines = [...new Set(segments.map(segment => trimValue(segment.airline)).filter(Boolean))].join(', ');
   const stops = segments.map(segment => trimValue(segment.stops)).filter(Boolean).join(' / ');
+  const departures = formatDepartureDisplayForSegments(segments);
 
   return {
     rank,
@@ -815,6 +830,7 @@ function buildCombinedBundleRow(bundle, rank) {
     airline: airlines,
     flight_number: segments.map(segment => trimValue(segment.flight_number)).filter(Boolean).join(' | '),
     stops,
+    departures,
     depart: firstSegment.depart || '',
     arrive: lastSegment.arrive || '',
     duration: '',
@@ -2838,7 +2854,7 @@ cli({
     { name: 'combined', type: 'bool', default: false, help: 'For multi-city, use Google Flights native combined pricing and walk the live selection flow to final bundled totals' },
     { name: 'api', type: 'bool', default: false, help: 'Return structured JSON payload for programmatic use' },
   ],
-  columns: ['segment_index', 'segment_route', 'rank', 'price', 'airline', 'flight_number', 'stops', 'depart', 'arrive', 'duration', 'from_airport', 'to_airport'],
+  columns: ['segment_index', 'segment_route', 'rank', 'price', 'airline', 'flight_number', 'stops', 'departures', 'duration', 'from_airport', 'to_airport'],
   func: async (_page, kwargs) => {
     const itinerary = resolveItinerary(kwargs);
     const limit = clampLimit(kwargs.limit);

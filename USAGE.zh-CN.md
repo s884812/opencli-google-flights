@@ -95,13 +95,14 @@ opencli google-flights search --segments 'TPE>SIN@2026-11-24;SIN>TPE@2027-01-07'
 普通 `search` 行输出使用以下列：
 
 ```text
-segment_index  segment_route  rank  price  airline  flight_number  stops  depart  arrive  duration  from_airport  to_airport
+segment_index  segment_route  rank  price  airline  flight_number  stops  departures  duration  from_airport  to_airport
 ```
 
 补充：
 
 - 只要结果是按 segment 展开，`segment_index` 和 `segment_route` 就会有值
 - 单程模式通常不会填写这两个字段
+- `departures` 是给普通表格显示用的字段；combined row 会列出每段出发时间，`depart` 和 `arrive` 仍保留在 `--api` 数据中
 
 ### 多段 `--segments` 格式
 
@@ -303,6 +304,7 @@ opencli google-flights search --segments 'Tokyo>Sapporo@2026-04-16;Sapporo>Osaka
 | `airline` | 全部行 | 航司名称 |
 | `flight_number` | 全部行 | 航班号，或多段时以 `|` 拼接 |
 | `stops` | 全部行 | `nonstop`、`1 stop`、`2 stops` 等 |
+| `departures` | `search` 的全部行 | 给普通表格显示用的出发时间；combined bundle rows 会列出每段出发时间 |
 | `depart` | 全部行 | 解析出的出发日期时间 |
 | `arrive` | 全部行 | 解析出的到达日期时间 |
 | `duration` | 全部行 | 可读时长 |

@@ -100,13 +100,14 @@ Notes:
 Normal `search` row output uses these columns:
 
 ```text
-segment_index  segment_route  rank  price  airline  flight_number  stops  depart  arrive  duration  from_airport  to_airport
+segment_index  segment_route  rank  price  airline  flight_number  stops  departures  duration  from_airport  to_airport
 ```
 
 Notes:
 
 - `segment_index` and `segment_route` are populated whenever output is expanded per segment
 - In one-way mode, those 2 columns are typically empty
+- `departures` is display-oriented; combined rows list each leg's departure time, while `depart` and `arrive` remain available in `--api`
 
 ### Multi-city segment format
 
@@ -475,6 +476,7 @@ Flight row fields returned by `search --api`:
 | `airline` | all rows | Airline name or names |
 | `flight_number` | all rows | Flight number or comma-separated numbers |
 | `stops` | all rows | `nonstop`, `1 stop`, `2 stops`, etc. |
+| `departures` | all rows from `search` | Display-oriented departure times; combined bundle rows list one departure per leg |
 | `depart` | all rows | Parsed departure datetime |
 | `arrive` | all rows | Parsed arrival datetime |
 | `duration` | all rows | Human-readable duration |
