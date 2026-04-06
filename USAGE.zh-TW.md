@@ -1,8 +1,8 @@
 # Google Flights OpenCLI 使用說明（繁體中文）
 
-本文件說明 `/Users/s884812/.opencli/clis/google-flights` 內 `google-flights` adapter 的目前行為。
+本文件說明 `google-flights` adapter 安裝在 `~/.opencli/clis/google-flights` 時的目前行為。
 
-已於 `2026-04-05` 依照程式碼與實際指令輸出再次核對。
+已於 `2026-04-06` 依照程式碼與實際指令輸出再次核對。
 
 ## 指令
 
@@ -12,6 +12,44 @@
 opencli google-flights search ...
 opencli google-flights results <url> ...
 ```
+
+## 從 GitHub 安裝
+
+這個 repo 是 OpenCLI adapter 目錄，不是 Codex skill。OpenCLI 會在 repo 位於下列位置時載入它：
+
+```text
+~/.opencli/clis/google-flights
+```
+
+全新安裝：
+
+```bash
+mkdir -p ~/.opencli/clis
+git clone https://github.com/s884812/opencli-google-flights.git ~/.opencli/clis/google-flights
+opencli list | grep google-flights
+```
+
+如果你已經把 repo clone 到其他位置，可以建立 symlink：
+
+```bash
+mkdir -p ~/.opencli/clis
+ln -s /path/to/opencli-google-flights ~/.opencli/clis/google-flights
+```
+
+更新既有安裝：
+
+```bash
+git -C ~/.opencli/clis/google-flights pull
+```
+
+安裝後，應該可以使用下列指令：
+
+```bash
+opencli google-flights search ...
+opencli google-flights results <url> ...
+```
+
+這個 adapter 預期會從 `~/.opencli/clis/` 下面的 `google-flights` 目錄執行；如果放在其他位置又沒有建立 symlink，OpenCLI 可能掃不到這個指令。
 
 ## 執行需求
 

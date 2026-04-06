@@ -1,8 +1,8 @@
 # Google Flights OpenCLI Usage
 
-This document describes the current behavior of the `google-flights` adapter in `/Users/s884812/.opencli/clis/google-flights`.
+This document describes the current behavior of the `google-flights` adapter when installed at `~/.opencli/clis/google-flights`.
 
-Last checked against code and live command output on `2026-04-05`.
+Last checked against code and live command output on `2026-04-06`.
 
 Localized copies:
 
@@ -17,6 +17,44 @@ This adapter currently exposes 2 commands:
 opencli google-flights search ...
 opencli google-flights results <url> ...
 ```
+
+## Install From GitHub
+
+This repository is an OpenCLI adapter directory, not a Codex skill. OpenCLI loads it when the repository is available at:
+
+```text
+~/.opencli/clis/google-flights
+```
+
+Fresh install:
+
+```bash
+mkdir -p ~/.opencli/clis
+git clone https://github.com/s884812/opencli-google-flights.git ~/.opencli/clis/google-flights
+opencli list | grep google-flights
+```
+
+If the repository is already cloned somewhere else, create a symlink:
+
+```bash
+mkdir -p ~/.opencli/clis
+ln -s /path/to/opencli-google-flights ~/.opencli/clis/google-flights
+```
+
+Update an existing install:
+
+```bash
+git -C ~/.opencli/clis/google-flights pull
+```
+
+After installation, these commands should be available:
+
+```bash
+opencli google-flights search ...
+opencli google-flights results <url> ...
+```
+
+The adapter is expected to run from the `google-flights` directory under `~/.opencli/clis/`; placing it elsewhere without a symlink can prevent OpenCLI from discovering the command.
 
 ## Requirements
 

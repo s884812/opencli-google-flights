@@ -20,6 +20,42 @@ Current capabilities:
 - Structured JSON output for programmatic use
 - Result-page parsing from an existing Google Flights URL
 
+### Install Into OpenCLI
+
+This repository is an OpenCLI adapter directory, not a Codex skill. OpenCLI discovers it from:
+
+```text
+~/.opencli/clis/google-flights
+```
+
+Fresh install:
+
+```bash
+mkdir -p ~/.opencli/clis
+git clone https://github.com/s884812/opencli-google-flights.git ~/.opencli/clis/google-flights
+opencli list | grep google-flights
+```
+
+If you already cloned the repository elsewhere, symlink it into OpenCLI's adapter directory:
+
+```bash
+mkdir -p ~/.opencli/clis
+ln -s /path/to/opencli-google-flights ~/.opencli/clis/google-flights
+```
+
+Update an existing install:
+
+```bash
+git -C ~/.opencli/clis/google-flights pull
+```
+
+After installation, OpenCLI should expose:
+
+```bash
+opencli google-flights search ...
+opencli google-flights results <url> ...
+```
+
 Quick examples:
 
 ```bash
@@ -55,6 +91,42 @@ Documentation:
 - 適合程式接取的 JSON 結構化輸出
 - 直接解析既有 Google Flights 結果頁網址
 
+### 安裝到 OpenCLI
+
+這個 repo 是 OpenCLI adapter 目錄，不是 Codex skill。OpenCLI 會從下列位置掃描到它：
+
+```text
+~/.opencli/clis/google-flights
+```
+
+全新安裝：
+
+```bash
+mkdir -p ~/.opencli/clis
+git clone https://github.com/s884812/opencli-google-flights.git ~/.opencli/clis/google-flights
+opencli list | grep google-flights
+```
+
+如果你已經把 repo clone 到其他位置，可以用 symlink 接到 OpenCLI 的 adapter 目錄：
+
+```bash
+mkdir -p ~/.opencli/clis
+ln -s /path/to/opencli-google-flights ~/.opencli/clis/google-flights
+```
+
+更新既有安裝：
+
+```bash
+git -C ~/.opencli/clis/google-flights pull
+```
+
+安裝後，OpenCLI 應該會提供：
+
+```bash
+opencli google-flights search ...
+opencli google-flights results <url> ...
+```
+
 快速範例：
 
 ```bash
@@ -89,6 +161,42 @@ opencli google-flights results '<google-flights-url>' --limit 5
 - 多段分段计价与 Google 原生合并计价
 - 适合程序接入的 JSON 结构化输出
 - 直接解析现有 Google Flights 结果页 URL
+
+### 安装到 OpenCLI
+
+这个 repo 是 OpenCLI adapter 目录，不是 Codex skill。OpenCLI 会从下面的位置扫描到它：
+
+```text
+~/.opencli/clis/google-flights
+```
+
+全新安装：
+
+```bash
+mkdir -p ~/.opencli/clis
+git clone https://github.com/s884812/opencli-google-flights.git ~/.opencli/clis/google-flights
+opencli list | grep google-flights
+```
+
+如果你已经把 repo clone 到其他位置，可以用 symlink 接到 OpenCLI 的 adapter 目录：
+
+```bash
+mkdir -p ~/.opencli/clis
+ln -s /path/to/opencli-google-flights ~/.opencli/clis/google-flights
+```
+
+更新已有安装：
+
+```bash
+git -C ~/.opencli/clis/google-flights pull
+```
+
+安装后，OpenCLI 应该会提供：
+
+```bash
+opencli google-flights search ...
+opencli google-flights results <url> ...
+```
 
 快速示例：
 
