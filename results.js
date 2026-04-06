@@ -2,6 +2,11 @@ import { ArgumentError, EmptyResultError } from '../../errors.js';
 import { cli, Strategy } from '../../registry.js';
 import { DEFAULT_LIMIT, MAX_LIMIT, clampLimit, extractFlights, extractTitle, fetchHtml, parseGoogleFlightsUrl } from './shared.js';
 
+function stripAirportFieldsForDisplay(row) {
+  const { from_airport: _fromAirport, to_airport: _toAirport, ...rest } = row;
+  return rest;
+}
+
 cli({
   site: 'google-flights',
   name: 'results',
@@ -12,7 +17,7 @@ cli({
     { name: 'url', required: true, positional: true, help: 'Google Flights URL or generated tfs URL' },
     { name: 'limit', type: 'int', default: DEFAULT_LIMIT, help: `Number of rows to return (max ${MAX_LIMIT})` },
   ],
-  columns: ['rank', 'price', 'airline', 'flight_number', 'stops', 'depart', 'arrive', 'duration', 'from_airport', 'to_airport'],
+  columns: ['rank', 'price', 'airline', 'flight_number', 'stops', 'depart', 'arrive', 'duration'],
   func: async (_page, kwargs) => {
     let parsedUrl;
     try {
@@ -33,6 +38,6 @@ cli({
       );
     }
 
-    return flights;
+    return flights.map((flight) => stripAirportFieldsForDisplay(flight));
   },
 });

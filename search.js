@@ -387,6 +387,16 @@ function decorateFlights(flights, searchUrl, tripType) {
   }));
 }
 
+function stripInternalFieldsForDisplay(row) {
+  const { from_airport: _fromAirport, to_airport: _toAirport, raw_aria: _rawAria, ...rest } = row;
+  return {
+    ...rest,
+    ...(Array.isArray(row.segments)
+      ? { segments: row.segments.map((segment) => stripInternalFieldsForDisplay(segment)) }
+      : {}),
+  };
+}
+
 function filterShoppingResultEntries(entries) {
   return entries.filter((entry) => (
     entry.url
@@ -2854,7 +2864,7 @@ cli({
     { name: 'combined', type: 'bool', default: false, help: 'For multi-city, use Google Flights native combined pricing and walk the live selection flow to final bundled totals' },
     { name: 'api', type: 'bool', default: false, help: 'Return structured JSON payload for programmatic use' },
   ],
-  columns: ['segment_index', 'segment_route', 'rank', 'price', 'airline', 'flight_number', 'stops', 'departures', 'duration', 'from_airport', 'to_airport'],
+  columns: ['segment_index', 'segment_route', 'rank', 'price', 'airline', 'flight_number', 'stops', 'departures', 'duration'],
   func: async (_page, kwargs) => {
     const itinerary = resolveItinerary(kwargs);
     const limit = clampLimit(kwargs.limit);
@@ -2941,7 +2951,7 @@ cli({
         return null;
       }
 
-      return finalFlights;
+      return finalFlights.map((flight) => stripInternalFieldsForDisplay(flight));
     } finally {
       await browser.cleanup();
     }

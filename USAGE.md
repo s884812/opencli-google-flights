@@ -100,7 +100,7 @@ Notes:
 Normal `search` row output uses these columns:
 
 ```text
-segment_index  segment_route  rank  price  airline  flight_number  stops  departures  duration  from_airport  to_airport
+segment_index  segment_route  rank  price  airline  flight_number  stops  departures  duration
 ```
 
 Notes:
@@ -108,6 +108,7 @@ Notes:
 - `segment_index` and `segment_route` are populated whenever output is expanded per segment
 - In one-way mode, those 2 columns are typically empty
 - `departures` is display-oriented; combined rows list each leg's departure time, while `depart` and `arrive` remain available in `--api`
+- Full `from_airport` and `to_airport` fields are hidden from normal output to keep tables compact; use `--api` if a program needs them
 
 ### Multi-city segment format
 
@@ -567,8 +568,8 @@ opencli google-flights results 'https://www.google.com/travel/flights/search?tfs
 Current output shape:
 
 ```text
-Rank  Price  Airline  Flight_number  Stops    Depart             Arrive             Duration     From_airport                    To_airport
-1     5,830  Jetstar  GK 156         nonstop  2026-04-22 16:40   2026-04-22 19:00   2 hr 20 min New Chitose Airport (CTS)     Kansai International Airport (KIX)
+Rank  Price  Airline  Flight_number  Stops    Depart             Arrive             Duration
+1     5,830  Jetstar  GK 156         nonstop  2026-04-22 16:40   2026-04-22 19:00   2 hr 20 min
 ```
 
 `results` returns parsed row objects only. It does not define its own `--api` flag.

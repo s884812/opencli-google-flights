@@ -95,7 +95,7 @@ opencli google-flights search --segments 'TPE>SIN@2026-11-24;SIN>TPE@2027-01-07'
 一般 `search` 列輸出會使用以下欄位：
 
 ```text
-segment_index  segment_route  rank  price  airline  flight_number  stops  departures  duration  from_airport  to_airport
+segment_index  segment_route  rank  price  airline  flight_number  stops  departures  duration
 ```
 
 補充：
@@ -103,6 +103,7 @@ segment_index  segment_route  rank  price  airline  flight_number  stops  depart
 - 只要結果是按 segment 展開，`segment_index` 與 `segment_route` 就會有值
 - 單程模式通常不會填這兩個欄位
 - `departures` 是給一般表格看的欄位；combined row 會列出每段的出發時間，`depart` 與 `arrive` 仍保留在 `--api` 資料中
+- 一般輸出會隱藏完整的 `from_airport` 與 `to_airport`，避免表格過寬；若程式需要這些欄位，請用 `--api`
 
 ### 多段 `--segments` 格式
 
@@ -395,8 +396,8 @@ opencli google-flights results 'https://www.google.com/travel/flights/search?tfs
 目前輸出形狀：
 
 ```text
-Rank  Price  Airline  Flight_number  Stops    Depart             Arrive             Duration     From_airport                    To_airport
-1     5,830  Jetstar  GK 156         nonstop  2026-04-22 16:40   2026-04-22 19:00   2 hr 20 min New Chitose Airport (CTS)     Kansai International Airport (KIX)
+Rank  Price  Airline  Flight_number  Stops    Depart             Arrive             Duration
+1     5,830  Jetstar  GK 156         nonstop  2026-04-22 16:40   2026-04-22 19:00   2 hr 20 min
 ```
 
 `results` 只會回 parsed row objects，不提供自己的 `--api` 旗標。
