@@ -7,7 +7,6 @@ import { tmpdir } from 'node:os';
 
 import { ArgumentError, CliError, EmptyResultError } from '../../errors.js';
 import { cli, Strategy } from '../../registry.js';
-import { CDPBridge } from '../../node_modules/@jackwener/opencli/dist/browser/cdp.js';
 import {
   DEFAULT_LIMIT,
   MAX_LIMIT,
@@ -18,6 +17,28 @@ import {
   extractTitle,
   fetchHtml,
 } from './shared.js';
+
+const { CDPBridge } = await importCdpBridge();
+
+async function importCdpBridge() {
+  const candidates = [
+    '../../node_modules/@jackwener/opencli/dist/src/browser/cdp.js',
+    '../../node_modules/@jackwener/opencli/dist/browser/cdp.js',
+    '../../browser/cdp.js',
+  ];
+  let lastError = null;
+
+  for (const candidate of candidates) {
+    try {
+      const mod = await import(candidate);
+      if (mod?.CDPBridge) return mod;
+    } catch (error) {
+      lastError = error;
+    }
+  }
+
+  throw lastError || new Error('Could not load OpenCLI CDPBridge');
+}
 
 const SEED_SEARCH_URL = 'https://www.google.com/travel/flights?hl=en';
 const DEFAULT_CDP_HOST = '127.0.0.1';
